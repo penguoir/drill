@@ -1,0 +1,33 @@
+.label {
+  display: block;
+  margin-bottom: 2px;
+}
+
+.input {
+  padding: 8px;
+  width: 100%;
+}
+
+.new-activity {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-gap: 1em;
+}
+
+.new-activity-wrapper {
+  padding-top: 12px;
+  margin-top: 32px;
+  border-top: 1px solid #eee;
+}
+
+.btn {
+  transition: all .3s ease;
+}
+
+.btn.bg-green:hover {
+  background-color: #028253;
+}
+
+.btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.5);
+}

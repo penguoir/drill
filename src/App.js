@@ -3,88 +3,88 @@ import './App.css';
 
 import { firestore } from './lib/firebase'
 import useRedirectToNewWorkout from './lib/useRedirectToNewWorkout'
+import useActivites from './lib/useActivities'
+
+import Activity from './Activity'
+import Workout from './Workout'
 
 function App() {
-  const [workout, setWorkout] = React.useState(null)
-  const [activities, setActivities] = React.useState(null)
+  const activities = useActivites(window.location.pathname.slice(1))
+  const nameElem = React.useRef(null)
 
+  // Redirect to a new workout page if not in one already
   useRedirectToNewWorkout()
 
-  React.useEffect(() => {
-    // If inside a workout
-    if (window.location.pathname !== "/") {
-      // Load the current workout
-      firestore
-        .collection('workouts')
-        .doc(window.location.pathname.slice(1))
-        .onSnapshot(snapshot => {
-          setWorkout(snapshot)
-        })
-
-      // And load the activites of the workout
-      firestore
-        .collection('workouts')
-        .doc(window.location.pathname.slice(1))
-        .collection('activities')
-        .orderBy('position')
-        .onSnapshot(snapshot => {
-          setActivities(snapshot)
-        })
-    }
-  }, [])
-
   const [name, setName] = React.useState('')
-  const [duration, setDuration] = React.useState(0)
+  const [duration, setDuration] = React.useState(60)
 
   const addActivity = () => {
+    nameElem.current.focus()
+
     firestore
-      .collection('workouts')
-      .doc(window.location.pathname.slice(1))
       .collection('activities')
       .add({
-        position: 0,
+        workout: window.location.pathname.slice(1),
+        position: activities.docs.length,
         name,
         duration
       })
   }
 
-  const deleteActivity = (e) => {
-    firestore
-      .collection('workouts')
-      .doc(window.location.pathname.slice(1))
-      .collection('activities')
-      .doc(e.target.parentElement.id)
-      .delete()
+  if (window.location.pathname.slice(-7) === "workout") {
+    return <Workout id={window.location.pathname.slice(1, -8)} />
   }
 
   return (
-    <div className="App">
-      <h1>Your workout</h1>
-      <div>
-        {workout === null && "Loading..."}
-      </div>
+    <main className="mw8 pb5 center pa3">
+      <h1 className="mt5 tc f1 lh-title">Your workout</h1>
+      <a className="db btn pa3 link bg-blue white mb4 br2 tc" href={window.location.pathname + '/workout'}>
+        Start this workout
+      </a>
 
+      <h3>Activities</h3>
       {activities && activities.docs && activities.docs.map(x => 
-        <div id={x.id} key={x.id}>
-          ({x.data().position}) {x.data().name} -- {x.data().duration} <button onClick={e => deleteActivity(e)}>Delete</button>
-        </div>
+        <Activity id={x.id} key={x.id} name={x.data().name} duration={x.data().duration} />
       )}
 
-      <label htmlFor="workout-name">
-        Activity name
-      </label>
-      <input value={name} onChange={e => setName(e.target.value)} id="workout-name" type="text" />
-      <br/>
-      <label htmlFor="workout-duration">
-        Activity duration
-      </label>
-      <input value={duration} onChange={e => setDuration(e.target.value)}  id="workout-duration" type="number" />
-      <br/>
+      <div className="new-activity-wrapper">
+        <h3>Add activities to workout</h3>
+        <div className="new-activity">
+          <div>
+            <label className="label" htmlFor="workout-name">
+              Activity name
+            </label>
+            <input
+              ref={nameElem}
+              className="input"
+              value={name} 
+              onChange={e => setName(e.target.value)}
+              id="workout-name"
+              type="text"
+              placeholder="Squats x20"
+            />
+          </div>
+          <div>
+            <label className="label" htmlFor="workout-duration">
+              Activity duration
+            </label>
+            <input
+              className="input"
+              value={duration}
+              onChange={e => setDuration(e.target.value)} 
+              id="workout-duration"
+              type="number"
+            />
+          </div>
+        </div>
 
-      <button onClick={addActivity}>
-        Add activity
-      </button>
-    </div>
+        <div className="flex w-full justify-end">
+          <button className="btn pointer ph3 pv2 br2 mt3 white button-reset bg-green outline-0 bn" onClick={addActivity}>
+            Add activity
+          </button>
+        </div>
+      </div>
+    </main>
   );
 }
 
