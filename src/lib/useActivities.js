@@ -11,7 +11,7 @@ export default function useActivites (workoutId) {
       firestore
         .collection('activities')
         .where('workout', '==', workoutId)
-        // .orderBy('position') (for now)
+        .orderBy('timestamp')
         .onSnapshot(snapshot => {
           setActivities(snapshot)
         })
