@@ -19,7 +19,7 @@ export default function Workout({ id }) {
         window.location.pathname = '/' + id
       }
     }
-  }, [activities, currentActivityIndex])
+  }, [id, activities, currentActivityIndex])
 
   React.useEffect(() => {
     const interval = setInterval(() => {
@@ -40,10 +40,10 @@ export default function Workout({ id }) {
 
   return (
     <div className="center-on-screen">
-      <h1 class="f-headline mb0 lh-title">
+      <h1 className="f-headline mb0 lh-title">
         {currentActivity.name}
       </h1>
-      <p class="f2">
+      <p className="f2">
         {Number(currentActivity.duration) - timePast}s left
       </p>
     </div>

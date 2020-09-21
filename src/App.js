@@ -26,6 +26,7 @@ function App() {
       .add({
         workout: window.location.pathname.slice(1),
         position: activities.docs.length,
+        timestamp: new Date(),
         name,
         duration
       })
