@@ -13,9 +13,9 @@ function Activity ({ id, name, duration }) {
   }
 
   return (
-    <div class="activity mb2 ba b--moon-gray pa2 d-flex">
+    <div className="activity mb2 ba b--moon-gray pa2 d-flex">
       <p>{name} ({duration}s)</p>
-      <button class="bg-white pointer btn bn outline-0 di" onClick={e => deleteActivity(e)}>
+      <button className="bg-white pointer btn bn outline-0 di" onClick={e => deleteActivity(e)}>
         <span role="img" aria-label="Delete activity">
         🗑️
         </span>
