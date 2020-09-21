@@ -45,7 +45,7 @@ function App() {
 
       <h3>Activities</h3>
       {activities && activities.docs && activities.docs.map(x => 
-        <Activity id={x.id} key={x.id} name={x.data().name} duration={x.data().duration} />
+        <Activity id={x.id} key={x.id} name={x.data().name} duration={Number(x.data().duration)} />
       )}
 
       <div className="new-activity-wrapper">
